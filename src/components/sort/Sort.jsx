@@ -6,7 +6,7 @@ const SORT_ITEMS = [
     { name: "алфавиту", sortType: "title" },
 ];
 
-const Sort = ({ sortType, setSortType }) => {
+const Sort = ({ sort, getSortType }) => {
     const [popUp, setPopUp] = useState(false);
 
     const togglePopUp = (e) => {
@@ -14,7 +14,7 @@ const Sort = ({ sortType, setSortType }) => {
     };
 
     const getActiveSortItem = (index) => {
-        setSortType(index);
+        getSortType(index);
         setPopUp(false);
     };
 
@@ -35,22 +35,22 @@ const Sort = ({ sortType, setSortType }) => {
                     />
                 </svg>
                 <b>Сортировка по:</b>
-                <span>{sortType.name}</span>
+                <span>{sort.name}</span>
             </div>
             {popUp && (
                 <div class="sort__popup">
                     <ul>
-                        {SORT_ITEMS.map((sort, index) => (
+                        {SORT_ITEMS.map((sortType, index) => (
                             <li
                                 className={
-                                    sort.name === sortType.name
+                                    sortType.name === sort.name
                                         ? "active"
                                         : null
                                 }
-                                onClick={() => getActiveSortItem(sort)}
+                                onClick={() => getActiveSortItem(sortType)}
                                 key={index}
                             >
-                                {sort.name}
+                                {sortType.name}
                             </li>
                         ))}
                     </ul>

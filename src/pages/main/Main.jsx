@@ -7,28 +7,30 @@ import Cart from "../../components/cart/Cart";
 import MyLoader from "../../components/loader/Loader";
 import Nosearch from "../../components/nosearch/Nosearch";
 import Pagination from "../../components/pagination/Pagination";
+import { useDispatch, useSelector } from "react-redux";
+import { setCategoryId, setSortType } from "../../redux/filterSlice";
 
 const CATEGORIES = ["Все", "Пиццы", "Завтрак", "Комбо", "Закуски", "Напитки"];
 
 const Main = ({ search }) => {
     const [items, setItems] = useState([]);
-    const [sortByCategory, setSortByCategory] = useState(0);
-    const [sortType, setSortType] = useState({
-        name: "попопулярности",
-        sortType: "rating",
-    });
     const [currentPage, setCurrentPage] = useState(1);
     const [isLoading, setIsLoading] = useState(true);
 
+    const categoryActive = useSelector((state) => state.filter.category);
+    const sort = useSelector((state) => state.filter.sortType);
+    const dispatch = useDispatch();
+
+    console.log(sort);
     const getAllPizzas = async () => {
         setIsLoading(true);
         try {
-            let url = `https://7d7cc53e3b90fa42.mokky.dev/allItems?page=${currentPage}&limit=8&sortBy=${sortType.sortType}&title=*${search}`;
-            if (sortByCategory && sortByCategory !== 0) {
-                url += `&category=${sortByCategory}`;
+            let url = `https://7d7cc53e3b90fa42.mokky.dev/allItems?page=${currentPage}&limit=8&sortBy=${sort.sortType}&title=*${search}`;
+            if (categoryActive && categoryActive !== 0) {
+                url += `&category=${categoryActive}`;
             }
             const { data } = await axios.get(url);
-            console.log(data.items);
+
             setItems(data.items);
             setIsLoading(false);
             window.scrollTo(0, 0);
@@ -37,38 +39,34 @@ const Main = ({ search }) => {
         }
     };
 
-    const getSortCategory = (index) => {
-        setSortByCategory(index);
-    };
-
-    const getSortPrice = (index) => {
-        setSortType(index);
+    const getSortType = (index) => {
+        dispatch(setSortType(index));
     };
 
     const onChangePage = (number) => {
         setCurrentPage(number);
     };
 
+    const getCuttentCaregory = (index) => {
+        dispatch(setCategoryId(index));
+    };
+
     useEffect(() => {
         getAllPizzas();
-    }, [sortByCategory, sortType, search, currentPage]);
+    }, [categoryActive, sort, search, currentPage]);
 
     return (
         <div className="content">
             <div className="container">
                 <div className="content__top">
                     <Categories
+                        getCuttentCaregory={getCuttentCaregory}
                         CATEGORIES={CATEGORIES}
-                        getSortCategory={getSortCategory}
                     />
-                    <Sort
-                        getSortPrice={getSortPrice}
-                        setSortType={setSortType}
-                        sortType={sortType}
-                    />
+                    <Sort getSortType={getSortType} sort={sort} />
                 </div>
                 <h2 className="content__title">
-                    {items.length > 0 ? CATEGORIES[sortByCategory] : null}
+                    {items.length > 0 ? CATEGORIES[categoryActive] : null}
                 </h2>
                 <div className="content__items">
                     {isLoading

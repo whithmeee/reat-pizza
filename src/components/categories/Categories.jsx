@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 
-const Categories = ({ getSortCategory, CATEGORIES }) => {
+const Categories = ({ getCuttentCaregory, CATEGORIES }) => {
     const [categorieActive, setCategorieActive] = useState(0);
 
     const getCategpriesActive = (index) => {
         setCategorieActive(() => index);
-        getSortCategory(index);
+        getCuttentCaregory(index);
     };
 
     return (
