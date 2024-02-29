@@ -1,8 +1,11 @@
+import { useContext } from "react";
 import styles from "./Search.module.scss";
 import { IoMdSearch } from "react-icons/io";
 import { IoCloseOutline } from "react-icons/io5";
+import { MyContext } from "../../context/useContext";
 
-const Search = ({ search, setSearch }) => {
+const Search = () => {
+    const { search, setSearch } = useContext(MyContext);
     return (
         <div className={styles["root"]}>
             <span>
