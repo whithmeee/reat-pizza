@@ -4,6 +4,12 @@
 
 @import "./components/all";
 
+html {
+    font-size: 100%;
+    transform: scale(0.9);
+    scroll-behavior: smooth;
+}
+
 body {
     background-color: #fff;
 }
@@ -51,6 +57,13 @@ body {
         @media (max-width: 1260px) {
             flex-direction: column;
         }
+    }
+
+    .content-search {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        align-items: center;
     }
 }
 

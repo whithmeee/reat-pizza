@@ -1,9 +1,17 @@
 import React, { useState } from "react";
 
-const Categories = ({ getCuttentCaregory, CATEGORIES }) => {
+interface CategoriesProps {
+    getCuttentCaregory: (index: number) => void;
+    CATEGORIES: string[];
+}
+
+const Categories: React.FC<CategoriesProps> = ({
+    getCuttentCaregory,
+    CATEGORIES,
+}) => {
     const [categorieActive, setCategorieActive] = useState(0);
 
-    const getCategpriesActive = (index) => {
+    const getCategpriesActive = (index: number) => {
         setCategorieActive(() => index);
         getCuttentCaregory(index);
     };
@@ -15,7 +23,7 @@ const Categories = ({ getCuttentCaregory, CATEGORIES }) => {
                     <li
                         key={index}
                         onClick={() => getCategpriesActive(index)}
-                        className={categorieActive === index ? "active" : null}
+                        className={categorieActive === index ? "active" : ""}
                     >
                         {category}
                     </li>

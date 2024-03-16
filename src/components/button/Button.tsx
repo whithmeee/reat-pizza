@@ -2,12 +2,17 @@ import React from "react";
 import styles from "./Button.module.scss";
 import cn from "classnames";
 
-const Button = ({ children, className }) => {
+interface Button {
+    children: React.ReactNode;
+    className?: string[];
+}
+
+const Button: React.FC<Button> = ({ children, className }) => {
     return (
         <button
             className={cn(
                 styles.button,
-                ...className.map((name) => styles[name])
+                ...(className ? className.map((name) => styles[name]) : [])
             )}
         >
             {children}

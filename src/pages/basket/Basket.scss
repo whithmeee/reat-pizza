@@ -14,51 +14,8 @@
     .basket_item {
         margin-top: 61px;
         display: flex;
-        justify-content: space-between;
-        align-items: center;
-
-        img {
-            width: 80px;
-            height: 80px;
-        }
-
-        .item {
-            display: flex;
-            gap: 10px;
-        }
-
-        .item_count {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            justify-content: center;
-
-            span {
-                font-style: normal;
-                font-weight: 700;
-                font-size: 22px;
-                line-height: 27px;
-                letter-spacing: 0.01em;
-
-                color: #000000;
-            }
-        }
-
-        .item_price {
-            span {
-                font-style: normal;
-                font-weight: 700;
-                font-size: 22px;
-                line-height: 27px;
-                letter-spacing: 0.01em;
-
-                color: #000000;
-            }
-        }
-
-        .item_close {
-            cursor: pointer;
-        }
+        flex-direction: column;
+        gap: 70px;
     }
 
     .basket_total {
@@ -97,5 +54,16 @@
         display: flex;
         justify-content: space-between;
         margin-top: 40px;
+    }
+}
+
+.basket-clear {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 10px;
+
+    p {
+        font-size: 20px;
     }
 }

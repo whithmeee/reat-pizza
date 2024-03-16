@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React, { useContext, useEffect } from "react";
+import qs from "qs";
 
+import { useNavigate } from "react-router-dom";
 import Categories from "../../components/categories/Categories";
 import Sort from "../../components/sort/Sort";
 import Cart from "../../components/cart/Cart";
@@ -9,51 +10,61 @@ import Nosearch from "../../components/nosearch/Nosearch";
 import Pagination from "../../components/pagination/Pagination";
 import { useDispatch, useSelector } from "react-redux";
 import { setCategoryId, setSortType } from "../../redux/filterSlice";
+import { setPage } from "../../redux/paginateSlice";
+import { MyContext } from "../../context/useContext";
+import { fetchPizza } from "../../redux/pizzaSlice";
 
 const CATEGORIES = ["Все", "Пиццы", "Завтрак", "Комбо", "Закуски", "Напитки"];
 
-const Main = ({ search }) => {
-    const [items, setItems] = useState([]);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [isLoading, setIsLoading] = useState(true);
-
+const Main = () => {
+    const { search } = useContext(MyContext);
+    const { items, status } = useSelector((state) => state.pizza);
     const categoryActive = useSelector((state) => state.filter.category);
     const sort = useSelector((state) => state.filter.sortType);
+    const page = useSelector((state) => state.page.page);
     const dispatch = useDispatch();
 
-    console.log(sort);
-    const getAllPizzas = async () => {
-        setIsLoading(true);
-        try {
-            let url = `https://7d7cc53e3b90fa42.mokky.dev/allItems?page=${currentPage}&limit=8&sortBy=${sort.sortType}&title=*${search}`;
-            if (categoryActive && categoryActive !== 0) {
-                url += `&category=${categoryActive}`;
-            }
-            const { data } = await axios.get(url);
+    const navigate = useNavigate();
 
-            setItems(data.items);
-            setIsLoading(false);
-            window.scrollTo(0, 0);
-        } catch (error) {
-            console.log(error);
-        }
+    const getAllPizzas = async () => {
+        dispatch(
+            // @ts-ignore
+            fetchPizza({
+                page,
+                sort,
+                categoryActive,
+                search,
+            })
+        );
+
+        window.scrollTo(0, 0);
     };
 
-    const getSortType = (index) => {
+    const getSortType = (index: number) => {
         dispatch(setSortType(index));
     };
 
-    const onChangePage = (number) => {
-        setCurrentPage(number);
+    const onChangePage = (number: number) => {
+        dispatch(setPage(number));
     };
 
-    const getCuttentCaregory = (index) => {
+    const getCuttentCaregory = (index: number) => {
         dispatch(setCategoryId(index));
     };
 
     useEffect(() => {
         getAllPizzas();
-    }, [categoryActive, sort, search, currentPage]);
+    }, [categoryActive, sort, search, page]);
+
+    useEffect(() => {
+        const queryString = qs.stringify({
+            sortType: sort.sortType,
+            categoryActive: categoryActive,
+            page: page,
+        });
+
+        navigate(`?${queryString}`);
+    }, [categoryActive, sort, search, page]);
 
     return (
         <div className="content">
@@ -69,21 +80,32 @@ const Main = ({ search }) => {
                     {items.length > 0 ? CATEGORIES[categoryActive] : null}
                 </h2>
                 <div className="content__items">
-                    {isLoading
+                    {status === "loading"
                         ? [...new Array(4)].map((_, index) => {
                               return <MyLoader key={index} />;
                           })
                         : null}
-                    {!isLoading && items.length > 0
+                    {status === "success" && items.length > 0
                         ? items.map((item) => {
                               return <Cart key={item.id} {...item} />;
                           })
                         : undefined}
                 </div>
-                {items.length === 0 ? <Nosearch /> : null}
-                {items.length === 0 ? null : (
-                    <Pagination onChangePage={onChangePage} />
-                )}
+                {status === "error" && items.length === 0 ? (
+                    <Nosearch
+                        children={
+                            <div className="content-search">
+                                <h2>Ой, ошибка при получение товаров!.</h2>
+
+                                <p>Попробуйте позднее...</p>
+                            </div>
+                        }
+                    />
+                ) : null}
+
+                {categoryActive === 0 || categoryActive === 1 ? (
+                    <Pagination items={items} onChangePage={onChangePage} />
+                ) : null}
             </div>
         </div>
     );

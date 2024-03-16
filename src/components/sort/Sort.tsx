@@ -1,28 +1,56 @@
-import { useState } from "react";
+import React from "react";
+import { useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
+import { setClearSort } from "../../redux/filterSlice";
 
-const SORT_ITEMS = [
+interface SORT_ITEM {
+    name: string;
+    sortType: string;
+}
+
+const SORT_ITEMS: SORT_ITEM[] = [
     { name: "популярности", sortType: "rating" },
     { name: "цене", sortType: "price" },
     { name: "алфавиту", sortType: "title" },
 ];
 
 const Sort = ({ sort, getSortType }) => {
+    const sortRef = useRef<HTMLDivElement>(null);
     const [popUp, setPopUp] = useState(false);
+    const dispatch = useDispatch();
 
-    const togglePopUp = (e) => {
+    const togglePopUp = () => {
         setPopUp(true);
     };
 
-    const getActiveSortItem = (index) => {
+    const getActiveSortItem = (index: SORT_ITEM) => {
         getSortType(index);
         setPopUp(false);
     };
 
+    useEffect(() => {
+        const handleClickOutside = (event: any) => {
+            if (!event.composedPath().includes(sortRef.current)) {
+                setPopUp(false);
+            }
+        };
+        document.body.addEventListener("click", handleClickOutside);
+
+        return () => {
+            document.body.removeEventListener("click", handleClickOutside);
+        };
+    }, []);
+
+    const handleClearSort = () => {
+        dispatch(setClearSort(sort));
+        setPopUp(false);
+    };
+
     return (
-        <div class="sort">
-            <div onClick={togglePopUp} class="sort__label">
+        <div ref={sortRef} className="sort">
+            <div onClick={togglePopUp} className="sort__label">
                 <svg
-                    className={popUp ? "active" : null}
+                    className={popUp ? "active" : ""}
                     width="10"
                     height="10"
                     viewBox="0 0 10 6"
@@ -37,15 +65,18 @@ const Sort = ({ sort, getSortType }) => {
                 <b>Сортировка по:</b>
                 <span>{sort.name}</span>
             </div>
+
+            <div>
+                <button onClick={handleClearSort}>сбросить</button>
+            </div>
+
             {popUp && (
-                <div class="sort__popup">
+                <div className="sort__popup">
                     <ul>
                         {SORT_ITEMS.map((sortType, index) => (
                             <li
                                 className={
-                                    sortType.name === sort.name
-                                        ? "active"
-                                        : null
+                                    sortType.name === sort.name ? "active" : ""
                                 }
                                 onClick={() => getActiveSortItem(sortType)}
                                 key={index}

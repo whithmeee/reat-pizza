@@ -1,22 +1,60 @@
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { addItems } from "../../redux/cartSlice";
 
-const Cart = ({ ...item }) => {
+interface CartProps {
+    id: number;
+    title: string;
+    price: number;
+    imageUrl: string;
+    sizes: number[];
+    types: number[];
+    description: string;
+    category: number;
+}
+
+const typeNames = ["тоннкое", "традиционное"];
+const sizeTypes = [26, 30, 40];
+
+const Cart: React.FC<CartProps> = ({ ...item }) => {
     const [activeSize, setActiveSize] = useState(0);
     const [activeType, setActiveType] = useState(0);
+    const cartItem = useSelector((state) =>
+        state.cart.items.find((obj) => obj.id === item.id)
+    );
+    const dispatch = useDispatch();
 
-    const getActiveSize = (index) => {
+    const handleAddItem = () => {
+        const itemCart = {
+            id: item.id,
+            name: item.title,
+            price: item.price,
+            imageUrl: item.imageUrl,
+            sizes: sizeTypes[activeSize],
+            types: typeNames[activeType],
+        };
+        dispatch(addItems(itemCart));
+    };
+
+    const currentItemCount = cartItem ? cartItem.count : 0;
+
+    const getActiveSize = (index: number) => {
         setActiveSize(index);
     };
 
-    const getActiveType = (index) => {
+    const getActiveType = (index: number) => {
         setActiveType(index);
     };
     return (
-        <div class="pizza-block">
-            <img class="pizza-block__image" src={item.imageUrl} alt="Pizza" />
-            <h4 class="pizza-block__title">{item.title}</h4>
+        <div className="pizza-block">
+            <img
+                className="pizza-block__image"
+                src={item.imageUrl}
+                alt="Pizza"
+            />
+            <h4 className="pizza-block__title">{item.title}</h4>
             {item.types !== undefined ? (
-                <div key={item.id} class="pizza-block__selector">
+                <div key={item.id} className="pizza-block__selector">
                     <ul>
                         {" "}
                         {item.types !== undefined ? (
@@ -24,7 +62,7 @@ const Cart = ({ ...item }) => {
                                 <li
                                     key={index}
                                     className={
-                                        activeType === index ? "active" : null
+                                        activeType === index ? "active" : ""
                                     }
                                     onClick={() => getActiveType(index)}
                                 >
@@ -40,7 +78,7 @@ const Cart = ({ ...item }) => {
                             return (
                                 <li
                                     className={
-                                        activeSize === index ? "active" : null
+                                        activeSize === index ? "active" : ""
                                     }
                                     onClick={() => getActiveSize(index)}
                                     key={index}
@@ -57,12 +95,12 @@ const Cart = ({ ...item }) => {
             <div className="pizza-block__desc">
                 <p>{item.description}</p>
             </div>
-            <div class="pizza-block__bottom">
-                <div class="pizza-block__price">
+            <div className="pizza-block__bottom">
+                <div className="pizza-block__price">
                     {`${item.category === 1 ? `от ${item.price}` : item.price}`}
                     ₽
                 </div>
-                <div class="button button--outline button--add">
+                <div className="button button--outline button--add">
                     <svg
                         width="12"
                         height="12"
@@ -75,8 +113,8 @@ const Cart = ({ ...item }) => {
                             fill="white"
                         />
                     </svg>
-                    <span>Добавить</span>
-                    <i>2</i>
+                    <span onClick={handleAddItem}>Добавить</span>
+                    {currentItemCount > 0 && <i>{currentItemCount}</i>}
                 </div>
             </div>
         </div>
