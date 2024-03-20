@@ -2,10 +2,9 @@ import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import Search from "../search/Search";
 import { useSelector } from "react-redux";
-import { selectCart } from "../../redux/cartSlice";
 
 const Header = () => {
-    const { items, totalPrice } = useSelector(selectCart);
+    const { items, totalPrice } = useSelector((state) => state.cart);
     const totalCount = items.reduce(
         (sum: number, item: any) => sum + item.count,
         0
@@ -23,7 +22,7 @@ const Header = () => {
                             alt="Pizza logo"
                         />
                         <div>
-                            <h1>React Pizza</h1>
+                            <h1>Pizza</h1>
                             <p>самая вкусная пицца во вселенной</p>
                         </div>
                     </div>

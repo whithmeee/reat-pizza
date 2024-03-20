@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import CartItem from "../../components/cartItem/CartItem";
 import { clearItems } from "../../redux/cartSlice";
 import Nosearch from "../../components/nosearch/Nosearch";
+import { AppDisptah } from "../../redux";
 
 const Basket: React.FC = () => {
     const items = useSelector((state) => state.cart.items);
@@ -13,7 +14,7 @@ const Basket: React.FC = () => {
 
     const totalCount = items.reduce((sum, item) => sum + item.count, 0);
 
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<AppDisptah>();
 
     const clearBasketItems = () => {
         dispatch(clearItems(items));

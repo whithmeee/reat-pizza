@@ -1,6 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
+interface PaginateSliceState {
+    page: number;
+}
+
+const initialState: PaginateSliceState = {
     page: 1,
 };
 

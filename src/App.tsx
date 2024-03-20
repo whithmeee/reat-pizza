@@ -10,14 +10,14 @@ import ErrorPage from "./pages/error/ErrorPage";
 import "./scss/App.scss";
 
 const App = () => {
-    const [search, setSearch] = useState("");
+    const [search, setSearch] = useState<string | null>("");
 
     return (
         <div className="wrapper">
             <MyContext.Provider value={{ search, setSearch }}>
                 <Header />
                 <Routes>
-                    <Route path="/" element={<Main search={search} />} />
+                    <Route path="/" element={<Main />} />
                     <Route path="/basket" element={<Basket />} />
                     <Route path="*" element={<ErrorPage />} />
                 </Routes>

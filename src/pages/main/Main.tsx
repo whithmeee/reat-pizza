@@ -91,20 +91,22 @@ const Main = () => {
                           })
                         : undefined}
                 </div>
-                {status === "error" && items.length === 0 ? (
+                {status === "error" || items.length === 0 ? (
                     <Nosearch
                         children={
                             <div className="content-search">
-                                <h2>Ой, ошибка при получение товаров!.</h2>
+                                <h2>Ой, ошибка!.</h2>
 
-                                <p>Попробуйте позднее...</p>
+                                <p>Попробуйте другое название товара...</p>
                             </div>
                         }
                     />
-                ) : null}
+                ) : (
+                    ""
+                )}
 
                 {categoryActive === 0 || categoryActive === 1 ? (
-                    <Pagination items={items} onChangePage={onChangePage} />
+                    <Pagination onChangePage={onChangePage} />
                 ) : null}
             </div>
         </div>

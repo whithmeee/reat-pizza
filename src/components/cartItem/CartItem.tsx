@@ -3,18 +3,7 @@ import styles from "./CartItem.module.scss";
 import { useDispatch } from "react-redux";
 import { addItems, decrementItem, removeItems } from "../../redux/cartSlice";
 
-interface CartItemProps {
-    id: number;
-    imageUrl: string;
-    price: number;
-    name: string;
-    sizes: number;
-    types: string;
-    count: number;
-    totalPrice: number;
-}
-
-const CartItem: React.FC<CartItemProps> = ({ totalPrice, ...item }) => {
+const CartItem: React.FC = ({ totalPrice, ...item }) => {
     const dispatch = useDispatch();
 
     const removeBasketItems = () => {

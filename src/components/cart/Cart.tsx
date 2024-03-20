@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addItems } from "../../redux/cartSlice";
+import { CartItem, addItems } from "../../redux/cartSlice";
 
 interface CartProps {
     id: number;
@@ -25,13 +25,14 @@ const Cart: React.FC<CartProps> = ({ ...item }) => {
     const dispatch = useDispatch();
 
     const handleAddItem = () => {
-        const itemCart = {
+        const itemCart: CartItem = {
             id: item.id,
             name: item.title,
             price: item.price,
             imageUrl: item.imageUrl,
             sizes: sizeTypes[activeSize],
             types: typeNames[activeType],
+            count: 0,
         };
         dispatch(addItems(itemCart));
     };

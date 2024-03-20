@@ -29,11 +29,13 @@ const Sort = ({ sort, getSortType }) => {
     };
 
     useEffect(() => {
-        const handleClickOutside = (event: any) => {
-            if (!event.composedPath().includes(sortRef.current)) {
+        const handleClickOutside = (event: MouseEvent) => {
+            const target = event.target as Node;
+            if (!sortRef.current?.contains(target)) {
                 setPopUp(false);
             }
         };
+
         document.body.addEventListener("click", handleClickOutside);
 
         return () => {
